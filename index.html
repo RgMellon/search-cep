@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link
+      rel="stylesheet"
+      href="path/to/font-awesome/css/font-awesome.min.css"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>
+        Busca Cep
+      </h1>
+
+      <div class="cep">
+        <form action="" onsubmit="searchCep()">
+          <input
+            type="text"
+            id="input-cep"
+            name="cep"
+            placeholder="Buscar um cep..."
+          />
+          <button type="submit">Buscar</button>
+        </form>
+
+        <div id="ceps"></div>
+      </div>
+
+      <h1 class="outroSearch">Estado/Cidade/Bairro</h1>
+
+      <div class="bairro">
+        <form action="" onsubmit="buscaporBairro()">
+          <input
+            type="text"
+            id="input-cep-bairro"
+            name="cep"
+            placeholder=" pesquisar por Estado/Cidade/Bairro"
+          />
+          <button type="submit">Buscar</button>
+        </form>
+      </div>
+
+      <div id="ceps-bairros"></div>
+    </div>
+  </body>
+</html>
+
+<script>
+  function searchCep() {
+    event.preventDefault();
+
+    const input = document.getElementById("input-cep");
+
+    fetch(`https://viacep.com.br/ws/${input.value}/json`)
+      .then(res => res.json())
+      .then(
+        cep =>
+          (document.getElementById("ceps").innerHTML = `
+          <div class="item">
+            <i class="fas fa-city"></i>
+            <p> ${cep.logradouro} </p>
+            <p> ${cep.localidade} </p>
+            <p> ${cep.uf} </p>
+          </div>
+        `)
+      );
+  }
+
+  function buscaporBairro() {
+    event.preventDefault();
+
+    const input = document.getElementById("input-cep-bairro");
+
+    fetch(`https://viacep.com.br/ws/${input.value}/json`)
+      .then(res => res.json())
+      .then(cep => {
+        const res = cep.map(
+          item =>
+            `<div class="item">
+            <p> Rua : ${item.logradouro} </p>
+            <p> Cidade : ${item.localidade} </p>
+            <p> UF : ${item.uf} </p>
+            <p> Bairro : ${item.bairro} </p>
+          </div>`
+        );
+
+        document.getElementById("ceps-bairros").innerHTML = res;
+      });
+  }
+</script>
